@@ -4,6 +4,7 @@ root = Tk()
 #makes the GUI
 gui = Tk(className='Pong game')
 gui.geometry("500x500")
+gui['background']='#856ff8'
 
 #log-in button
 myButton = Button(gui, text ="log in", padx =50)
