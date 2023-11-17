@@ -1,28 +1,38 @@
-from tkinter import *
-
-root = Tk()
-#makes the GUI
-gui = Tk(className='Pong game')
-gui.geometry("500x500")
-gui['background']='#856ff8'
-
-#log-in button
-myButton = Button(gui, text ="log in", padx =50)
-myButton.grid(row=200, column=10)
-myButton.pack()
+import tkinter as tk
+from tkinter import messagebox
 
 def check_login():
-entered_username=username_entry.get()
-entered_password=password_entry.get()
+    entered_username=username_entry.get()
+    entered_password=password_entry.get()
+    
+    if entered_username==('maddie') and entered_password==('madd1'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+    elif entered_username==('tigger') and entered_password==('tigg2'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+    elif entered_username==('brandon') and entered_password==('bran3'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+    else:
+        messagebox.showerror('Login Failed','Invalid username or password')
+        
+root=tk.Tk()
+root.title("Pong Game Login")
+root.geometry("300x150")
+root.configure(bg="#856ff8")
 
-if enter_username=='maddie' and entered_password='madd1'=='pass':
-  messagebox.showinfo('Login Successful','Welcome, {}',format_user
-elif enter_username=='tigger' and entered_password='tigg2'=='pass':
-  messagebox.showinfo('Login Successful','Welcome, {}',format_user
-elif enter_username=='brandon' and entered_password='bran3'=='pass':
-  messagebox.showinfo('Login Successful','Welcome, {}',format_user
-else:
-  messagebox.showerror('Login Failed','Invalid username or password')
+username_label=tk.Label(root,text="Username:",
+bg="#000000", fg="white")
+username_label.grid(row=0,column=0,padx=10,
+pady=10,sticky="E")
+username_entry=tk.Entry(root,bg="#ecf0f1",fg="#2c3e50")
+username_entry.grid(row=0,column=1,padx=10,
+pady=10)
 
+password_label=tk.Label(root,text="Password:",bg="#000000",fg="white")
+password_label.grid(row=1,column=0,padx=10,pady=10,sticky="E")
+password_entry=tk.Entry(root,show="*",bg="#ecf0f1",fg="#2c3e50")
+password_entry.grid(row=1,column=1,padx=10,pady=10)
+
+login_button=tk.Button(root,text="Login",command=check_login,bg="#2ecc71", fg="white")
+login_button.grid(row=2,column=0,columnspan=2,pady=10)
 
 root.mainloop()
