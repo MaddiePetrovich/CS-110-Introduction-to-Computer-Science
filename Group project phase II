@@ -20,14 +20,14 @@ root.geometry("300x150")
 root.configure(bg="#856ff8")
 
 username_label=tk.Label(root,text="Username:",
-bg="#000000", fg="white")
+bg="#856ff8", fg="white")
 username_label.grid(row=0,column=0,padx=10,
 pady=10,sticky="E")
 username_entry=tk.Entry(root,bg="#ecf0f1",fg="#2c3e50")
 username_entry.grid(row=0,column=1,padx=10,
 pady=10)
 
-password_label=tk.Label(root,text="Password:",bg="#000000",fg="white")
+password_label=tk.Label(root,text="Password:",bg="#856ff8",fg="white")
 password_label.grid(row=1,column=0,padx=10,pady=10,sticky="E")
 password_entry=tk.Entry(root,show="*",bg="#ecf0f1",fg="#2c3e50")
 password_entry.grid(row=1,column=1,padx=10,pady=10)
