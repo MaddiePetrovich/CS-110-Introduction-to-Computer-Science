@@ -1,1 +1,7 @@
+from tkinter import *
 
+root = Tk()
+myButton = Button(root, text ="log in", padx =50)
+myButton.pack()
+
+root.mainloop()
