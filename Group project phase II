@@ -11,4 +11,18 @@ myButton = Button(gui, text ="log in", padx =50)
 myButton.grid(row=200, column=10)
 myButton.pack()
 
+def check_login():
+entered_username=username_entry.get()
+entered_password=password_entry.get()
+
+if enter_username=='maddie and entered_password=madd1==pass':
+  messagebox.showinfo('Login Successful','Welcome, {}',format_user
+elif enter_username=='tigger and entered_password=madd1==tigg2':
+  messagebox.showinfo('Login Successful','Welcome, {}',format_user
+elif enter_username=='brandon and entered_password=bran3==pass':
+  messagebox.showinfo('Login Successful','Welcome, {}',format_user
+else:
+  messagebox.showerror('Login Failed','Invalid username or password')
+
+
 root.mainloop()
