@@ -1,38 +1,74 @@
 import tkinter as tk
 from tkinter import messagebox
 
+#shows the directions for how to play
+def how_to():
+    directions_lable=tk.Label(start_window, text = "Use your mouse to control the paddle.\nTry to break as many bricks as you can to score points.\nIf you miss the ball three times the game is over.")
+    directions_lable.pack()
+    directions_button.destroy()
+    
+#creates game home screen
+def start_screen():
+    start_window=tk.Tk()
+    start_window.title('Pong Game')
+    start_window.geometry("500x400")
+    start_window.configure(bg="#856ff8")
+    
+    title=tk.Label(start_window, text = "Pong", font =('Impact', 50, 'bold'), fg = 'white', bg = '#856ff8')
+    title.pack()
+
+    def how_to():
+        directions_lable=tk.Label(start_window, text = "Use your mouse to control the paddle.\nTry to break as many bricks as you can to score points.\nIf you miss the ball three times the game is over.")
+        directions_lable.pack()
+        directions_button.destroy()
+
+    start_button = tk.Button(start_window, text = "Start", font =('Impact', 20, 'bold'), fg = '#4a148c')
+    start_button.pack(padx = 5, pady = 5)
+    directions_button = tk.Button(start_window, text = "How to Play", font =('Impact', 20, 'bold'), fg = '#4a148c', command = how_to)
+    directions_button.pack()
+
+#function that checks if the username an password are correct
 def check_login():
     entered_username=username_entry.get()
     entered_password=password_entry.get()
     
     if entered_username==('maddie') and entered_password==('madd1'):
         messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
     elif entered_username==('tigger') and entered_password==('tigg2'):
         messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
     elif entered_username==('brandon') and entered_password==('bran3'):
         messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
     else:
         messagebox.showerror('Login Failed','Invalid username or password')
-        
+
+#builds the root and window for login        
 root=tk.Tk()
 root.title("Pong Game Login")
-root.geometry("300x150")
+root.geometry("320x150")
 root.configure(bg="#856ff8")
 
-username_label=tk.Label(root,text="Username:",
-bg="#856ff8", fg="white")
+#creates the lable and entry box for the username
+username_label=tk.Label(root,text="Username:", font =('Segoe UI', 15), bg="#856ff8", fg="white")
 username_label.grid(row=0,column=0,padx=10,
 pady=10,sticky="E")
 username_entry=tk.Entry(root,bg="#ecf0f1",fg="#2c3e50")
 username_entry.grid(row=0,column=1,padx=10,
 pady=10)
 
-password_label=tk.Label(root,text="Password:",bg="#856ff8",fg="white")
+#creates the lable and entry box for the password
+password_label=tk.Label(root,text="Password:",font =('Segoe UI', 15), bg="#856ff8",fg="white")
 password_label.grid(row=1,column=0,padx=10,pady=10,sticky="E")
-password_entry=tk.Entry(root,show="*",bg="#ecf0f1",fg="#2c3e50")
+password_entry=tk.Entry(root,show="*",bg="#ecf0f1", fg="#2c3e50")
 password_entry.grid(row=1,column=1,padx=10,pady=10)
 
-login_button=tk.Button(root,text="Login",command=check_login,bg="#2ecc71", fg="white")
+#creates the login button
+login_button=tk.Button(root, fg = '#4a148c', text="Login", command=check_login, font =('Segoe UI', 15), borderwidth = '1')
 login_button.grid(row=2,column=0,columnspan=2,pady=10)
 
 root.mainloop()
