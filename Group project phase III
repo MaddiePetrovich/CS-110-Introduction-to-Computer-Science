@@ -1,0 +1,144 @@
+import tkinter as tk
+from tkinter import messagebox
+import pygame
+import sys
+
+#game code:
+
+def start_game():
+    
+    # Initialize Pygame
+    pygame.init()
+
+    # Constants
+    WIDTH, HEIGHT = 600, 400
+    BALL_RADIUS = 10
+    PADDLE_WIDTH, PADDLE_HEIGHT = 10, 60
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+
+    # Set up the game window
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Pong Game")
+
+    # Initialize game variables
+    ball_x = WIDTH // 2
+    ball_y = HEIGHT // 2
+    ball_speed_x = 5
+    ball_speed_y = 5
+
+    paddle_left_y = (HEIGHT - PADDLE_HEIGHT) // 2
+    paddle_right_y = (HEIGHT - PADDLE_HEIGHT) // 2
+    paddle_speed = 7
+
+    # Game loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] and paddle_right_y > 0:
+            paddle_right_y -= paddle_speed
+        if keys[pygame.K_DOWN] and paddle_right_y < HEIGHT - PADDLE_HEIGHT:
+            paddle_right_y += paddle_speed
+
+        # Update ball position
+        ball_x += ball_speed_x
+        ball_y += ball_speed_y
+
+        # Ball collisions with walls
+        if ball_y - BALL_RADIUS <= 0 or ball_y + BALL_RADIUS >= HEIGHT:
+            ball_speed_y = -ball_speed_y
+
+        # Ball collisions with paddles
+        if (
+            ball_x - BALL_RADIUS <= PADDLE_WIDTH
+            and paddle_left_y <= ball_y <= paddle_left_y + PADDLE_HEIGHT
+        ) or (
+            ball_x + BALL_RADIUS >= WIDTH - PADDLE_WIDTH
+            and paddle_right_y <= ball_y <= paddle_right_y + PADDLE_HEIGHT
+        ):
+            ball_speed_x = -ball_speed_x
+
+        # Draw everything
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, WHITE, (PADDLE_WIDTH, paddle_left_y, PADDLE_WIDTH, PADDLE_HEIGHT))
+        pygame.draw.rect(screen, WHITE, (WIDTH - 2 * PADDLE_WIDTH, paddle_right_y, PADDLE_WIDTH, PADDLE_HEIGHT))
+        pygame.draw.circle(screen, WHITE, (ball_x, ball_y), BALL_RADIUS)
+
+        # Update the display
+        pygame.display.flip()
+
+        # Control the frames per second (FPS)
+        pygame.time.Clock().tick(60)
+
+
+#creates game home screen
+def start_screen():
+    start_window=tk.Tk()
+    start_window.title('Pong Game')
+    start_window.geometry("500x400")
+    start_window.configure(bg="#856ff8")
+    
+    title=tk.Label(start_window, text = "Pong", font =('Impact', 50, 'bold'), fg = 'white', bg = '#856ff8')
+    title.pack()
+
+    #shows the directions for how to play 
+    def how_to():
+        directions_lable=tk.Label(start_window, text = "Use your mouse to control the paddle.\nTry to break as many bricks as you can to score points.\nIf you miss the ball three times the game is over.")
+        directions_lable.pack()
+        directions_button.destroy()
+
+    #creates the start and directions buttons
+    start_button = tk.Button(start_window, text = "Start", font =('Impact', 20, 'bold'), fg = '#4a148c', command = start_game)
+    start_button.pack(padx = 5, pady = 5)
+    directions_button = tk.Button(start_window, text = "How to Play", font =('Impact', 20, 'bold'), fg = '#4a148c', command = how_to)
+    directions_button.pack()
+
+#function that checks if the username an password are correct
+def check_login():
+    entered_username=username_entry.get()
+    entered_password=password_entry.get()
+    
+    if entered_username==('maddie') and entered_password==('madd1'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
+    elif entered_username==('tigger') and entered_password==('tigg2'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
+    elif entered_username==('brandon') and entered_password==('bran3'):
+        messagebox.showinfo('Login Successful','Welcome, {}'.format(entered_username))
+        root.destroy()
+        start_screen()
+    else:
+        messagebox.showerror('Login Failed','Invalid username or password')
+
+#builds the root and window for login        
+root=tk.Tk()
+root.title("Pong Game Login")
+root.geometry("320x150")
+root.configure(bg="#856ff8")
+
+#creates the lable and entry box for the username
+username_label=tk.Label(root,text="Username:", font =('Segoe UI', 15), bg="#856ff8", fg="white")
+username_label.grid(row=0,column=0,padx=10,
+pady=10,sticky="E")
+username_entry=tk.Entry(root,bg="#ecf0f1",fg="#2c3e50")
+username_entry.grid(row=0,column=1,padx=10,
+pady=10)
+
+#creates the lable and entry box for the password
+password_label=tk.Label(root,text="Password:",font =('Segoe UI', 15), bg="#856ff8",fg="white")
+password_label.grid(row=1,column=0,padx=10,pady=10,sticky="E")
+password_entry=tk.Entry(root,show="*",bg="#ecf0f1", fg="#2c3e50")
+password_entry.grid(row=1,column=1,padx=10,pady=10)
+
+#creates the login button
+login_button=tk.Button(root, fg = '#4a148c', text="Login", command=check_login, font =('Segoe UI', 15), borderwidth = '1')
+login_button.grid(row=2,column=0,columnspan=2,pady=10)
+
+root.mainloop()
