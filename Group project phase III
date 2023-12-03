@@ -3,6 +3,8 @@ from tkinter import messagebox
 import pygame
 import sys
 
+game_over = False
+
 #game code:
 
 def start_game():
@@ -23,20 +25,22 @@ def start_game():
 
     # Initialize game variables
     ball_x = WIDTH // 2
-    ball_y = HEIGHT // 2
+    ball_y = HEIGHT // 4
     ball_speed_x = 5
     ball_speed_y = 5
 
     paddle_bottom_x = (WIDTH - PADDLE_WIDTH) // 2
     paddle_bottom_y = HEIGHT - PADDLE_HEIGHT
     paddle_speed = 7
+    
+    ball_below_count = 0
+    
     #removes game start screen once the game is started
     start_window.destroy()
 
     # Game loop
-    ball_below_count = 0
-    
-    while True:
+    global game_over
+    while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -53,13 +57,18 @@ def start_game():
         ball_y += ball_speed_y
 
         # Ball collisions with walls
-        if ball_y - BALL_RADIUS <= 0 or ball_y + BALL_RADIUS >= HEIGHT + 250:
+        if ball_y - BALL_RADIUS <= 0 or ball_y + BALL_RADIUS >= HEIGHT + 100:
             ball_speed_y = -ball_speed_y
-            ball_below_count += 1
         if ball_x - BALL_RADIUS <= 0 or ball_x + BALL_RADIUS >= WIDTH:
             ball_speed_x = -ball_speed_x
+        
+        #Check if ball is below the paddle
+        if  ball_y + BALL_RADIUS >= HEIGHT:   
+            ball_x = WIDTH // 2
+            ball_y = HEIGHT // 4
+            ball_below_count += 1
 
-        # Ball collisions with paddles
+        # Ball collisions with paddle
         if (
             ball_x - BALL_RADIUS <= PADDLE_WIDTH
             and paddle_bottom_y <= ball_y <= paddle_bottom_y + PADDLE_HEIGHT
@@ -68,7 +77,10 @@ def start_game():
             and paddle_bottom_y <= ball_y <= paddle_bottom_y + PADDLE_HEIGHT
         ):
             ball_speed_x = -ball_speed_x
-            
+        
+        #if paddle misses ball 3 times it will end the game and return to menu    
+        if ball_below_count >= 3:
+            game_over = True
 
         # Draw everything
         screen.fill(BLACK)
@@ -80,12 +92,8 @@ def start_game():
 
         # Control the frames per second (FPS)
         pygame.time.Clock().tick(60)
-        
-        if ball_below_count >= 3:
-            game_over()
-            start_game.destroy()
-            start_screen()
             
+    game_over_screen()
 
 #creates game home screen
 def start_screen():
@@ -97,15 +105,6 @@ def start_screen():
     
     title=tk.Label(start_window, text = "Brick Breaker", font =('Impact', 50, 'bold'), fg = 'white', bg = '#856ff8')
     title.pack()
-
-def game_over():
-    game_over=tk.Tk()
-    game_over.title('Game Over')
-    game_over.geometry("600x400")
-    game_over.configure(bg="#856ff8")
-    
-    title=tk.Label(game_over, text = "Game Over", font =('Impact', 50, 'bold'), fg = 'white', bg = '#856ff8')
-    title.pack()
     
     #shows the directions for how to play 
     def how_to():
@@ -116,8 +115,27 @@ def game_over():
     #creates the start and directions buttons
     start_button = tk.Button(start_window, text = "Start", font =('Impact', 20, 'bold'), fg = '#4a148c', command = start_game)
     start_button.pack(padx = 5, pady = 5)
-    directions_button = tk.Button(start_window, text = "How to Play", font =('Impact', 20, 'bold'), fg = '#4a148c', command = how_to)
+    directions_button = tk.Button(start_window, text = "How to Play", font = ('Impact', 20, 'bold'), fg = '#4a148c', command = how_to)
     directions_button.pack()
+    
+def game_over_screen():
+    global game_over_window
+
+    # Create a new Tkinter window for the game over screen
+    game_over_window = tk.Toplevel()
+    game_over_window.title("Game Over")
+    game_over_window.geometry("300x150")
+
+    # Display game over message and restart button
+    game_over_label = tk.Label(game_over_window, text = "Game Over!", font = ('Segoe UI', 20), fg="red")
+    game_over_label.pack(pady=10)
+
+    restart_button = tk.Button(game_over_window, text = "Restart", command = restart_game)
+    restart_button.pack(pady=10)
+    
+def restart_game():
+    game_over_window.destroy()
+    start_game()
 
 #function that checks if the username an password are correct
 def check_login():
@@ -141,7 +159,7 @@ def check_login():
 
 #builds the root and window for login        
 root=tk.Tk()
-root.title("Pong Game Login")
+root.title("Brick Breaker Login")
 root.geometry("320x150")
 root.configure(bg="#856ff8")
 
