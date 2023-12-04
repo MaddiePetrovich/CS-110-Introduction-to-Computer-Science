@@ -1,24 +1,31 @@
+
 import tkinter as tk
 from tkinter import messagebox
 import pygame
 import sys
 
-game_over = False
 
 #game code:
 
 def start_game():
-    
+    game_over = False
     # Initialize Pygame
     pygame.init()
 
     # Constants
-    WIDTH, HEIGHT = 1000, 750
+    # Constants
+    WIDTH, HEIGHT = 800, 600
+    PADDLE_WIDTH, PADDLE_HEIGHT = 100, 10
     BALL_RADIUS = 10
-    PADDLE_WIDTH, PADDLE_HEIGHT = 60, 10
+    BRICK_WIDTH, BRICK_HEIGHT = 80, 20
+    PADDLE_SPEED = 10
+    BALL_SPEED_X, BALL_SPEED_Y = 5, 5
+
+    # Colors
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
-
+    VIOLET = (138,43,226)
+    
     # Set up the game window
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Brick Breaker")
@@ -29,78 +36,86 @@ def start_game():
     ball_speed_x = 5
     ball_speed_y = 5
 
+
     paddle_bottom_x = (WIDTH - PADDLE_WIDTH) // 2
     paddle_bottom_y = HEIGHT - PADDLE_HEIGHT
     paddle_speed = 7
     
     ball_below_count = 0
+
+    # Create the paddle
+    paddle = pygame.Rect((WIDTH - PADDLE_WIDTH) // 2, HEIGHT - PADDLE_HEIGHT - 10, PADDLE_WIDTH, PADDLE_HEIGHT)
+
+    # Create the ball
+    ball = pygame.Rect(ball_x - BALL_RADIUS, ball_y - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2)
+    ball_speed = [ball_speed_x, ball_speed_y]
+
+    #create the bricks
+    bricks = [pygame.Rect(col * BRICK_WIDTH, row * BRICK_HEIGHT, BRICK_WIDTH, BRICK_HEIGHT) for row in range(5) for col in range(WIDTH // BRICK_WIDTH)]
+
+    #create bottom of screen
+    ground = pygame.Rect((5, 590), (800, 5))
     
     #removes game start screen once the game is started
     start_window.destroy()
-
+    
     # Game loop
-    global game_over
-    while not game_over:
+    clock = pygame.time.Clock()  # Create a clock object to control the frame rate
+    while game_over == False:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
         
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and paddle_bottom_x > 0:
-            paddle_bottom_x -= paddle_speed
-        if keys[pygame.K_RIGHT] and paddle_bottom_x < WIDTH - PADDLE_WIDTH:
-            paddle_bottom_x += paddle_speed
-
-        # Update ball position
-        ball_x += ball_speed_x
-        ball_y += ball_speed_y
-
-        # Ball collisions with walls
-        if ball_y - BALL_RADIUS <= 0 or ball_y + BALL_RADIUS >= HEIGHT + 100:
-            ball_speed_y = -ball_speed_y
-        if ball_x - BALL_RADIUS <= 0 or ball_x + BALL_RADIUS >= WIDTH:
-            ball_speed_x = -ball_speed_x
+        if keys[pygame.K_LEFT] and paddle.left > 0:
+            paddle.move_ip(-PADDLE_SPEED, 0)
+        if keys[pygame.K_RIGHT] and paddle.right < WIDTH:
+            paddle.move_ip(PADDLE_SPEED, 0)
         
-        #Check if ball is below the paddle
-        if  ball_y + BALL_RADIUS >= HEIGHT:   
-            ball_x = WIDTH // 2
-            ball_y = HEIGHT // 4
+        # Update ball position
+        ball.move_ip(ball_speed)
+        
+        # Ball collisions with walls
+        if ball.left <= 0 or ball.right >= WIDTH:
+            ball_speed[0] = -ball_speed[0]
+        if ball.top <= 0:
+            ball_speed[1] = -ball_speed[1]
+
+        
+        #Check if ball is missed
+        if ball.colliderect(ground):
+            print("Ball is out of bounds. Resetting position.")
+            ball = pygame.Rect(ball_x - BALL_RADIUS, ball_y - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2)
+            ball_speed = [ball_speed_x, ball_speed_y]
             ball_below_count += 1
 
         # Ball collisions with paddle
-        if (
-            ball_x - BALL_RADIUS <= PADDLE_WIDTH
-            and paddle_bottom_y <= ball_y <= paddle_bottom_y + PADDLE_HEIGHT
-        ) or (
-            ball_x + BALL_RADIUS >= WIDTH - PADDLE_WIDTH
-            and paddle_bottom_y <= ball_y <= paddle_bottom_y + PADDLE_HEIGHT
-        ):
-            ball_speed_x = -ball_speed_x
+        if ball.colliderect(paddle) and ball_speed[1] > 0:
+            ball_speed[1] = -ball_speed[1]
+            
+         # Ball collisions with bricks
+        for brick in bricks[:]:
+            if ball.colliderect(brick):
+                bricks.remove(brick)
+                ball_speed[1] = -ball_speed[1]
         
         #if paddle misses ball 3 times it will end the game and return to menu    
         if ball_below_count >= 3:
             game_over = True
 
-        # Draw everything
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, WHITE, (paddle_bottom_x, paddle_bottom_y, PADDLE_WIDTH, PADDLE_HEIGHT))
-        pygame.draw.circle(screen, WHITE, (ball_x, ball_y), BALL_RADIUS)
-        
-        #draws the bricks
-        brick_x_position = 0
-        bricks = []
-        for i in range(20):
-            brick = pygame.draw.rect(screen, WHITE, (brick_x_position, 100, BRICK_WIDTH, BRICK_HEIGHT))
-            bricks.append(brick)
-            brick_x_position += 50
-            i += 1 
-
         # Update the display
+        screen.fill(BLACK)
+        pygame.draw.rect(screen, WHITE, paddle)
+        pygame.draw.rect(screen, VIOLET, ground)
+        pygame.draw.circle(screen, VIOLET, ball.center, BALL_RADIUS)
+
+        for brick in bricks:
+            pygame.draw.rect(screen, WHITE, brick)
+
         pygame.display.flip()
 
-        # Control the frames per second (FPS)
-        pygame.time.Clock().tick(60)
+        clock.tick(60)  # Control the frames per second (FPS)
             
     game_over_screen()
 
@@ -191,3 +206,4 @@ login_button=tk.Button(root, fg = '#4a148c', text="Login", command=check_login, 
 login_button.grid(row=2,column=0,columnspan=2,pady=10)
 
 root.mainloop()
+
