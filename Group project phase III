@@ -103,6 +103,15 @@ def start_game():
         #if paddle misses ball 3 times it will end the game and return to menu    
         if ball_below_count >= 3:
             game_over = True
+            messagebox.showinfo('Game Over!', 'Game Over! Press ok to return to the start menu.')
+            pygame.quit()
+            start_screen()
+
+        #if there are no more bricks you win!
+        if len(bricks) == 0:
+            messagebox.showinfo('You Win', 'Congrat')
+            pygame.quit()
+            start_screen()
 
         # Update the display
         screen.fill(BLACK)
@@ -142,24 +151,6 @@ def start_screen():
     directions_button = tk.Button(start_window, text = "How to Play", font = ('Impact', 20, 'bold'), fg = '#4a148c', command = how_to)
     directions_button.pack()
     
-def game_over_screen():
-    global game_over_window
-
-    # Create a new Tkinter window for the game over screen
-    game_over_window = tk.Toplevel()
-    game_over_window.title("Game Over")
-    game_over_window.geometry("300x150")
-
-    # Display game over message and restart button
-    game_over_label = tk.Label(game_over_window, text = "Game Over!", font = ('Segoe UI', 20), fg="red")
-    game_over_label.pack(pady=10)
-
-    restart_button = tk.Button(game_over_window, text = "Restart", command = restart_game)
-    restart_button.pack(pady=10)
-    
-def restart_game():
-    game_over_window.destroy()
-    start_game()
 
 #function that checks if the username an password are correct
 def check_login():
@@ -206,4 +197,3 @@ login_button=tk.Button(root, fg = '#4a148c', text="Login", command=check_login, 
 login_button.grid(row=2,column=0,columnspan=2,pady=10)
 
 root.mainloop()
-
