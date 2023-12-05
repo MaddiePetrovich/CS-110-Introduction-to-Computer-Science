@@ -125,8 +125,6 @@ def start_game():
         pygame.display.flip()
 
         clock.tick(60)  # Control the frames per second (FPS)
-            
-    game_over_screen()
 
 #creates game home screen
 def start_screen():
